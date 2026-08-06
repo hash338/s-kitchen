@@ -14,6 +14,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as InformationRouteImport } from './routes/information'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as OrderRouteImport } from './routes/order'
+import { Route as SKitchenStaff2024RouteImport } from './routes/s-kitchen-staff-2024'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const OrderRoute = OrderRouteImport.update({
   path: '/order',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SKitchenStaff2024Route = SKitchenStaff2024RouteImport.update({
+  id: '/s-kitchen-staff-2024',
+  path: '/s-kitchen-staff-2024',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
+  '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
+  '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
+  '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cart' | '/information' | '/menu' | '/order'
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/information'
+    | '/menu'
+    | '/order'
+    | '/s-kitchen-staff-2024'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cart' | '/information' | '/menu' | '/order'
-  id: '__root__' | '/' | '/cart' | '/information' | '/menu' | '/order'
+  to:
+    | '/'
+    | '/cart'
+    | '/information'
+    | '/menu'
+    | '/order'
+    | '/s-kitchen-staff-2024'
+  id:
+    | '__root__'
+    | '/'
+    | '/cart'
+    | '/information'
+    | '/menu'
+    | '/order'
+    | '/s-kitchen-staff-2024'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +105,7 @@ export interface RootRouteChildren {
   InformationRoute: typeof InformationRoute
   MenuRoute: typeof MenuRoute
   OrderRoute: typeof OrderRoute
+  SKitchenStaff2024Route: typeof SKitchenStaff2024Route
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/s-kitchen-staff-2024': {
+      id: '/s-kitchen-staff-2024'
+      path: '/s-kitchen-staff-2024'
+      fullPath: '/s-kitchen-staff-2024'
+      preLoaderRoute: typeof SKitchenStaff2024RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   InformationRoute: InformationRoute,
   MenuRoute: MenuRoute,
   OrderRoute: OrderRoute,
+  SKitchenStaff2024Route: SKitchenStaff2024Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
