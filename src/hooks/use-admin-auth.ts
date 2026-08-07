@@ -6,6 +6,7 @@ export function useAdminAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [roleLoading, setRoleLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -31,8 +32,10 @@ export function useAdminAuth() {
     let active = true;
     if (!session?.user) {
       setIsAdmin(false);
+      setRoleLoading(false);
       return;
     }
+    setRoleLoading(true);
     supabase
       .from("user_roles")
       .select("role")
@@ -40,12 +43,19 @@ export function useAdminAuth() {
       .eq("role", "admin")
       .maybeSingle()
       .then(({ data }) => {
-        if (active) setIsAdmin(Boolean(data));
+        if (!active) return;
+        setIsAdmin(Boolean(data));
+        setRoleLoading(false);
       });
     return () => {
       active = false;
     };
   }, [session]);
 
-  return { session, isAdmin, loading, signOut: () => supabase.auth.signOut() };
+  return {
+    session,
+    isAdmin,
+    loading: loading || roleLoading,
+    signOut: () => supabase.auth.signOut(),
+  };
 }
