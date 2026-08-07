@@ -16,7 +16,6 @@ import { Route as InformationRouteImport } from './routes/information'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as OrderRouteImport } from './routes/order'
 import { Route as SKitchenStaff2024RouteImport } from './routes/s-kitchen-staff-2024'
-import { Route as ApiPublicTempResetUsersRouteImport } from './routes/api/public/temp-reset-users'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -53,11 +52,6 @@ const SKitchenStaff2024Route = SKitchenStaff2024RouteImport.update({
   path: '/s-kitchen-staff-2024',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTempResetUsersRoute = ApiPublicTempResetUsersRouteImport.update({
-  id: '/api/public/temp-reset-users',
-  path: '/api/public/temp-reset-users',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,7 +61,6 @@ export interface FileRoutesByFullPath {
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
-  '/api/public/temp-reset-users': typeof ApiPublicTempResetUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +70,6 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
-  '/api/public/temp-reset-users': typeof ApiPublicTempResetUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +80,6 @@ export interface FileRoutesById {
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
-  '/api/public/temp-reset-users': typeof ApiPublicTempResetUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +91,6 @@ export interface FileRouteTypes {
     | '/menu'
     | '/order'
     | '/s-kitchen-staff-2024'
-    | '/api/public/temp-reset-users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +100,6 @@ export interface FileRouteTypes {
     | '/menu'
     | '/order'
     | '/s-kitchen-staff-2024'
-    | '/api/public/temp-reset-users'
   id:
     | '__root__'
     | '/'
@@ -120,7 +109,6 @@ export interface FileRouteTypes {
     | '/menu'
     | '/order'
     | '/s-kitchen-staff-2024'
-    | '/api/public/temp-reset-users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,7 +119,6 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   OrderRoute: typeof OrderRoute
   SKitchenStaff2024Route: typeof SKitchenStaff2024Route
-  ApiPublicTempResetUsersRoute: typeof ApiPublicTempResetUsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,13 +172,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SKitchenStaff2024RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/temp-reset-users': {
-      id: '/api/public/temp-reset-users'
-      path: '/api/public/temp-reset-users'
-      fullPath: '/api/public/temp-reset-users'
-      preLoaderRoute: typeof ApiPublicTempResetUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -203,18 +183,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   OrderRoute: OrderRoute,
   SKitchenStaff2024Route: SKitchenStaff2024Route,
-  ApiPublicTempResetUsersRoute: ApiPublicTempResetUsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
