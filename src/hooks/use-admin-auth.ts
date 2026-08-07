@@ -32,8 +32,10 @@ export function useAdminAuth() {
     let active = true;
     if (!session?.user) {
       setIsAdmin(false);
+      setRoleLoading(false);
       return;
     }
+    setRoleLoading(true);
     supabase
       .from("user_roles")
       .select("role")
@@ -41,12 +43,19 @@ export function useAdminAuth() {
       .eq("role", "admin")
       .maybeSingle()
       .then(({ data }) => {
-        if (active) setIsAdmin(Boolean(data));
+        if (!active) return;
+        setIsAdmin(Boolean(data));
+        setRoleLoading(false);
       });
     return () => {
       active = false;
     };
   }, [session]);
 
-  return { session, isAdmin, loading, signOut: () => supabase.auth.signOut() };
+  return {
+    session,
+    isAdmin,
+    loading: loading || roleLoading,
+    signOut: () => supabase.auth.signOut(),
+  };
 }
