@@ -20,7 +20,7 @@ export const Route = createFileRoute("/s-kitchen-staff-2024")({
 });
 
 const schema = z.object({
-  email: z.string().trim().email("Enter a valid email").max(255),
+  email: z.string().trim().toLowerCase().email("Enter a valid email").max(255),
   password: z.string().min(6, "Password must be at least 6 characters").max(72),
 });
 
@@ -99,6 +99,10 @@ function StaffLogin() {
               name="email"
               type="email"
               autoComplete="email"
+              inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               className={fieldClass}
             />
           </div>
@@ -111,6 +115,9 @@ function StaffLogin() {
               name="password"
               type="password"
               autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               className={fieldClass}
             />
           </div>
