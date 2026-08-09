@@ -9,6 +9,7 @@ export type MenuItem = {
   image_url: string | null;
   category: string;
   is_available: boolean;
+  is_today: boolean;
   sort_order: number;
 };
 
