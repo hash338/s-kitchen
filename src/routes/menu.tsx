@@ -36,8 +36,10 @@ export const Route = createFileRoute("/menu")({
 function MenuPage() {
   const { data: items } = useSuspenseQuery(menuQueryOptions);
   const { add } = useCart();
+  const [active, setActive] = useState<string>("All");
 
   const categories = Array.from(new Set(items.map((item) => item.category)));
+  const shown = active === "All" ? categories : categories.filter((c) => c === active);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
@@ -48,15 +50,33 @@ function MenuPage() {
         </p>
       </header>
 
+      {categories.length > 0 ? (
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          {["All", ...categories].map((category) => (
+            <button
+              key={category}
+              onClick={() => setActive(category)}
+              className={
+                active === category
+                  ? "rounded-full bg-gold-gradient px-4 py-2 text-xs font-bold text-primary-foreground"
+                  : "rounded-full border border-gold/40 px-4 py-2 text-xs font-semibold text-gold transition-colors hover:bg-accent"
+              }
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       {items.length === 0 ? (
         <p className="mt-12 text-center text-muted-foreground">
           The menu is being updated. Please check back soon.
         </p>
       ) : (
-        categories.map((category) => (
-          <section key={category} className="mt-12">
+        shown.map((category) => (
+          <section key={category} className="mt-10">
             <h2 className="font-display text-2xl text-gold">{category}</h2>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-5 lg:grid-cols-3">
               {items
                 .filter((item) => item.category === category)
                 .map((item) => (
@@ -80,21 +100,23 @@ function MenuPage() {
 function DishCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-shadow hover:shadow-gold">
-      <DishImage path={item.image_url} alt={item.name} className="h-44 w-full" />
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-display text-lg">{item.name}</h3>
-        <p className="mt-1 flex-1 text-sm text-muted-foreground">{item.description}</p>
-        <div className="mt-4 flex items-center justify-between gap-3">
-          <span className="price-tag text-lg">{formatPrice(Number(item.price))}</span>
+      <DishImage path={item.image_url} alt={item.name} className="h-24 w-full sm:h-44" />
+      <div className="flex flex-1 flex-col p-2 sm:p-4">
+        <h3 className="font-display text-sm leading-tight sm:text-lg">{item.name}</h3>
+        <p className="mt-1 flex-1 line-clamp-2 text-[11px] text-muted-foreground sm:line-clamp-none sm:text-sm">
+          {item.description}
+        </p>
+        <div className="mt-2 flex flex-col items-start gap-2 sm:mt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+          <span className="price-tag text-sm sm:text-lg">{formatPrice(Number(item.price))}</span>
           {item.is_available ? (
             <button
               onClick={onAdd}
-              className="inline-flex items-center gap-1 rounded-full bg-gold-gradient px-4 py-2 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1 rounded-full bg-gold-gradient px-3 py-1.5 text-[11px] font-bold text-primary-foreground transition-opacity hover:opacity-90 sm:px-4 sm:py-2 sm:text-xs"
             >
-              <Plus className="h-3.5 w-3.5" /> Add
+              <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> Add
             </button>
           ) : (
-            <span className="text-xs font-semibold uppercase text-muted-foreground">
+            <span className="text-[10px] font-semibold uppercase text-muted-foreground sm:text-xs">
               Sold out
             </span>
           )}
