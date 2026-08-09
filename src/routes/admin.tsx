@@ -489,7 +489,8 @@ function AdminItemCard({
         </div>
         <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          {item.category} · {item.is_available ? "available" : "hidden"}
+          {item.category} · {item.is_available ? "available" : "sold out"}
+          {item.is_today ? " · today's dish" : ""}
         </p>
         <div className="mt-3 flex gap-3">
           <button
