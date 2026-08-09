@@ -253,6 +253,7 @@ function MenuPanel() {
         price: Number(value.price) || 0,
         category: value.category.trim() || "Main",
         is_available: value.is_available,
+        is_today: value.is_today,
         sort_order: Number(value.sort_order) || 0,
         image_url: value.image_url,
       };
