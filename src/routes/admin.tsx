@@ -223,6 +223,7 @@ type Draft = {
   price: string;
   category: string;
   is_available: boolean;
+  is_today: boolean;
   sort_order: string;
   image_url: string | null;
 };
@@ -233,6 +234,7 @@ const emptyDraft: Draft = {
   price: "",
   category: "Main",
   is_available: true,
+  is_today: false,
   sort_order: "0",
   image_url: null,
 };
@@ -251,6 +253,7 @@ function MenuPanel() {
         price: Number(value.price) || 0,
         category: value.category.trim() || "Main",
         is_available: value.is_available,
+        is_today: value.is_today,
         sort_order: Number(value.sort_order) || 0,
         image_url: value.image_url,
       };
@@ -389,6 +392,15 @@ function MenuPanel() {
               />
               Available
             </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={draft.is_today}
+                onChange={(e) => setDraft({ ...draft, is_today: e.target.checked })}
+                className="h-4 w-4 accent-[var(--gold)]"
+              />
+              Today's dish
+            </label>
             <label className="text-sm">
               <span className="mr-2 text-muted-foreground">Picture</span>
               <input
@@ -444,6 +456,7 @@ function MenuPanel() {
                   price: String(item.price),
                   category: item.category,
                   is_available: item.is_available,
+                  is_today: item.is_today,
                   sort_order: String(item.sort_order),
                   image_url: item.image_url,
                 })
@@ -476,7 +489,8 @@ function AdminItemCard({
         </div>
         <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          {item.category} · {item.is_available ? "available" : "hidden"}
+          {item.category} · {item.is_available ? "available" : "sold out"}
+          {item.is_today ? " · today's dish" : ""}
         </p>
         <div className="mt-3 flex gap-3">
           <button

@@ -22,6 +22,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_available: boolean
+          is_today: boolean
           name: string
           price: number
           sort_order: number
@@ -34,6 +35,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_available?: boolean
+          is_today?: boolean
           name: string
           price?: number
           sort_order?: number
@@ -46,6 +48,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_available?: boolean
+          is_today?: boolean
           name?: string
           price?: number
           sort_order?: number

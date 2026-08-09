@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { data: items } = useSuspenseQuery(menuQueryOptions);
-  const featured = items.filter((item) => item.is_available).slice(0, 3);
+  const featured = items.filter((item) => item.is_today).slice(0, 6);
 
   return (
     <div>
@@ -100,25 +100,36 @@ function Home() {
         <section className="mx-auto w-full max-w-6xl px-4 pb-8">
           <div className="flex items-end justify-between gap-4">
             <h2 className="font-display text-2xl text-gold-gradient sm:text-3xl">
-              Today's favourites
+              Today's dishes
             </h2>
             <Link to="/menu" className="text-sm font-semibold text-gold hover:underline">
               Full menu
             </Link>
           </div>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-5 lg:grid-cols-3">
             {featured.map((item) => (
               <article
                 key={item.id}
-                className="overflow-hidden rounded-xl border border-border/60 bg-card"
+                className="relative overflow-hidden rounded-xl border border-border/60 bg-card"
               >
-                <DishImage path={item.image_url} alt={item.name} className="h-40 w-full" />
-                <div className="p-4">
-                  <h3 className="font-display text-lg">{item.name}</h3>
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                <DishImage
+                  path={item.image_url}
+                  alt={item.name}
+                  className="h-24 w-full sm:h-40"
+                />
+                {!item.is_available ? (
+                  <span className="absolute left-2 top-2 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">
+                    Sold out
+                  </span>
+                ) : null}
+                <div className="p-2 sm:p-4">
+                  <h3 className="font-display text-sm leading-tight sm:text-lg">{item.name}</h3>
+                  <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground sm:text-sm">
                     {item.description}
                   </p>
-                  <p className="mt-3 price-tag">{formatPrice(Number(item.price))}</p>
+                  <p className="mt-2 price-tag text-sm sm:mt-3 sm:text-base">
+                    {formatPrice(Number(item.price))}
+                  </p>
                 </div>
               </article>
             ))}
