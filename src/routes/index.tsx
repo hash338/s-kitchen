@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { data: items } = useSuspenseQuery(menuQueryOptions);
-  const featured = items.filter((item) => item.is_available).slice(0, 3);
+  const featured = items.filter((item) => item.is_today).slice(0, 6);
 
   return (
     <div>
