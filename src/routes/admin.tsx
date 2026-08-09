@@ -223,6 +223,7 @@ type Draft = {
   price: string;
   category: string;
   is_available: boolean;
+  is_today: boolean;
   sort_order: string;
   image_url: string | null;
 };
@@ -233,6 +234,7 @@ const emptyDraft: Draft = {
   price: "",
   category: "Main",
   is_available: true,
+  is_today: false,
   sort_order: "0",
   image_url: null,
 };
