@@ -392,6 +392,15 @@ function MenuPanel() {
               />
               Available
             </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={draft.is_today}
+                onChange={(e) => setDraft({ ...draft, is_today: e.target.checked })}
+                className="h-4 w-4 accent-[var(--gold)]"
+              />
+              Today's dish
+            </label>
             <label className="text-sm">
               <span className="mr-2 text-muted-foreground">Picture</span>
               <input
