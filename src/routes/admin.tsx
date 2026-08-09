@@ -447,6 +447,7 @@ function MenuPanel() {
                   price: String(item.price),
                   category: item.category,
                   is_available: item.is_available,
+                  is_today: item.is_today,
                   sort_order: String(item.sort_order),
                   image_url: item.image_url,
                 })
