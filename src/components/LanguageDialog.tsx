@@ -21,7 +21,6 @@ export function LanguageDialog() {
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent
-        showCloseButton={false}
         className="max-w-sm border-gold/40 bg-surface text-center"
       >
         <img
