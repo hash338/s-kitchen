@@ -6,6 +6,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/brand";
 import { useCart } from "@/lib/cart";
+import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/order")({
   head: () => ({
@@ -27,13 +28,13 @@ export const Route = createFileRoute("/order")({
 });
 
 const baseSchema = z.object({
-  customer_name: z.string().trim().min(2, "Please enter your name").max(80),
+  customer_name: z.string().trim().min(2, "order.err.name").max(80),
   phone: z
     .string()
     .trim()
-    .min(6, "Please enter a valid phone number")
+    .min(6, "order.err.phone")
     .max(25)
-    .regex(/^[0-9+\-\s()]+$/, "Phone can only contain numbers and + - ( )"),
+    .regex(/^[0-9+\-\s()]+$/, "order.err.phoneChars"),
   order_type: z.enum(["takeaway", "delivery"]),
   building_name: z.string().trim().max(120).optional(),
   floor: z.string().trim().max(40).optional(),
@@ -43,8 +44,17 @@ const baseSchema = z.object({
 
 type Coords = { lat: number; lng: number } | null;
 
+const ERROR_KEYS = ["order.err.name", "order.err.phone", "order.err.phoneChars"] as const;
+
+function translateError(message: string, t: (key: (typeof ERROR_KEYS)[number]) => string) {
+  return (ERROR_KEYS as readonly string[]).includes(message)
+    ? t(message as (typeof ERROR_KEYS)[number])
+    : message;
+}
+
 function OrderPage() {
   const { lines, total, clear } = useCart();
+  const { t } = useLang();
   const navigate = useNavigate();
   const [orderType, setOrderType] = useState<"takeaway" | "delivery">("takeaway");
   const [coords, setCoords] = useState<Coords>(null);
@@ -54,7 +64,7 @@ function OrderPage() {
 
   function locate() {
     if (!navigator.geolocation) {
-      toast.error("Your browser does not support location sharing");
+      toast.error(t("order.err.geoUnsupported"));
       return;
     }
     setLocating(true);
@@ -62,11 +72,11 @@ function OrderPage() {
       (pos) => {
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         setLocating(false);
-        toast.success("Location captured");
+        toast.success(t("order.geoOk"));
       },
       () => {
         setLocating(false);
-        toast.error("Could not get your location. Please allow location access.");
+        toast.error(t("order.geoFail"));
       },
       { enableHighAccuracy: true, timeout: 10000 },
     );
@@ -75,7 +85,7 @@ function OrderPage() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (lines.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error(t("order.err.cart"));
       return;
     }
 
@@ -93,7 +103,7 @@ function OrderPage() {
     if (!parsed.success) {
       const next: Record<string, string> = {};
       for (const issue of parsed.error.issues) {
-        next[String(issue.path[0])] = issue.message;
+        next[String(issue.path[0])] = translateError(issue.message, t);
       }
       setErrors(next);
       return;
@@ -103,9 +113,9 @@ function OrderPage() {
 
     if (orderType === "delivery") {
       const missing: Record<string, string> = {};
-      if (!values.building_name) missing["building_name"] = "Building name is required";
-      if (!values.floor) missing["floor"] = "Floor is required";
-      if (!values.side) missing["side"] = "Please choose right or left";
+      if (!values.building_name) missing["building_name"] = t("order.err.building");
+      if (!values.floor) missing["floor"] = t("order.err.floor");
+      if (!values.side) missing["side"] = t("order.err.side");
       if (Object.keys(missing).length > 0) {
         setErrors(missing);
         return;
@@ -132,12 +142,12 @@ function OrderPage() {
     setSubmitting(false);
 
     if (error) {
-      toast.error("We couldn't send your order. Please try again.");
+      toast.error(t("order.sendFail"));
       return;
     }
 
     clear();
-    toast.success("Order sent! We will call you to confirm.");
+    toast.success(t("order.sent"));
     void navigate({ to: "/" });
   }
 
@@ -148,16 +158,16 @@ function OrderPage() {
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <h1 className="font-display text-3xl text-gold-gradient sm:text-4xl">Place your order</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Tell us who you are and how you want your food.
+        {t("order.sub")}
       </p>
 
       <div className="mt-8 rounded-xl border border-border/60 bg-card p-5">
-        <h2 className="font-display text-lg text-gold">Order summary</h2>
+        <h2 className="font-display text-lg text-gold">{t("order.summary")}</h2>
         {lines.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">
-            Your cart is empty.{" "}
+            {t("cart.empty")}{" "}
             <Link to="/menu" className="text-gold hover:underline">
-              Add some dishes
+              {t("order.addDishes")}
             </Link>
             .
           </p>
@@ -172,7 +182,7 @@ function OrderPage() {
               </li>
             ))}
             <li className="flex justify-between gap-4 border-t border-border/50 pt-2 font-semibold">
-              <span>Total</span>
+              <span>{t("cart.total")}</span>
               <span className="price-tag">{formatPrice(total)}</span>
             </li>
           </ul>
@@ -183,7 +193,7 @@ function OrderPage() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor="customer_name" className="text-sm font-medium">
-              Your name
+              {t("order.name")}
             </label>
             <input id="customer_name" name="customer_name" maxLength={80} className={fieldClass} />
             {errors["customer_name"] ? (
@@ -192,7 +202,7 @@ function OrderPage() {
           </div>
           <div>
             <label htmlFor="phone" className="text-sm font-medium">
-              Phone number
+              {t("order.phone")}
             </label>
             <input
               id="phone"
@@ -209,7 +219,7 @@ function OrderPage() {
         </div>
 
         <fieldset>
-          <legend className="text-sm font-medium">How do you want it?</legend>
+          <legend className="text-sm font-medium">{t("order.how")}</legend>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             {(["takeaway", "delivery"] as const).map((type) => (
               <button
@@ -223,7 +233,7 @@ function OrderPage() {
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {type}
+                {type === "takeaway" ? t("order.takeaway") : t("order.delivery")}
               </button>
             ))}
           </div>
@@ -231,10 +241,10 @@ function OrderPage() {
 
         {orderType === "delivery" ? (
           <div className="space-y-5 rounded-xl border border-gold/40 bg-card p-5">
-            <h2 className="font-display text-lg text-gold">Delivery details</h2>
+            <h2 className="font-display text-lg text-gold">{t("order.deliveryDetails")}</h2>
 
             <div>
-              <p className="text-sm font-medium">Your location on the map</p>
+              <p className="text-sm font-medium">{t("order.locationLabel")}</p>
               <button
                 type="button"
                 onClick={locate}
@@ -246,7 +256,7 @@ function OrderPage() {
                 ) : (
                   <LocateFixed className="h-4 w-4" />
                 )}
-                {coords ? "Update my location" : "Use my current location"}
+                {coords ? t("order.updateLocation") : t("order.useLocation")}
               </button>
               {coords ? (
                 <div className="mt-3 space-y-2">
@@ -262,12 +272,12 @@ function OrderPage() {
                     rel="noreferrer"
                     className="text-xs text-gold hover:underline"
                   >
-                    Open in Google Maps ({coords.lat.toFixed(5)}, {coords.lng.toFixed(5)})
+                    {t("order.openMaps")} <span dir="ltr">({coords.lat.toFixed(5)}, {coords.lng.toFixed(5)})</span>
                   </a>
                 </div>
               ) : (
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Optional, but it helps the driver find you faster.
+                  {t("order.locationHint")}
                 </p>
               )}
             </div>
@@ -275,7 +285,7 @@ function OrderPage() {
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <label htmlFor="building_name" className="text-sm font-medium">
-                  Building name
+                  {t("order.building")}
                 </label>
                 <input
                   id="building_name"
@@ -289,7 +299,7 @@ function OrderPage() {
               </div>
               <div>
                 <label htmlFor="floor" className="text-sm font-medium">
-                  Floor
+                  {t("order.floor")}
                 </label>
                 <input id="floor" name="floor" maxLength={40} className={fieldClass} />
                 {errors["floor"] ? (
@@ -300,12 +310,12 @@ function OrderPage() {
 
             <div>
               <label htmlFor="side" className="text-sm font-medium">
-                Which side of the floor?
+                {t("order.side")}
               </label>
               <select id="side" name="side" defaultValue="" className={fieldClass}>
-                <option value="">Choose…</option>
-                <option value="right">Right</option>
-                <option value="left">Left</option>
+                <option value="">{t("order.choose")}</option>
+                <option value="right">{t("order.right")}</option>
+                <option value="left">{t("order.left")}</option>
               </select>
               {errors["side"] ? (
                 <p className="mt-1 text-xs text-destructive">{errors["side"]}</p>
@@ -316,7 +326,7 @@ function OrderPage() {
 
         <div>
           <label htmlFor="notes" className="text-sm font-medium">
-            Notes (optional)
+            {t("order.notes")}
           </label>
           <textarea id="notes" name="notes" rows={3} maxLength={500} className={fieldClass} />
         </div>
@@ -327,7 +337,7 @@ function OrderPage() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-gold transition-opacity hover:opacity-90 disabled:opacity-50 sm:w-auto"
         >
           {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-          Submit order
+          {t("order.submit")}
         </button>
       </form>
     </div>

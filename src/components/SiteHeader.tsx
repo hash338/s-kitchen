@@ -5,17 +5,19 @@ import logo from "@/assets/s-kitchen-logo.jpg.asset.json";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 import { BRAND } from "@/lib/brand";
+import { useLang, type TKey } from "@/lib/i18n";
+import { LanguageToggle } from "@/components/LanguageDialog";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/menu", label: "Menu" },
-  { to: "/cart", label: "Cart" },
-  { to: "/order", label: "Order" },
-  { to: "/information", label: "Information" },
-] as const;
+  { to: "/", key: "nav.home" },
+  { to: "/menu", key: "nav.menu" },
+  { to: "/cart", key: "nav.cart" },
+  { to: "/order", key: "nav.order" },
+] as const satisfies ReadonlyArray<{ to: string; key: TKey }>;
 
 export function SiteHeader() {
   const { count } = useCart();
+  const { t } = useLang();
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,32 +42,34 @@ export function SiteHeader() {
               activeOptions={{ exact: item.to === "/" }}
               className="relative rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-gold data-[status=active]:text-gold"
             >
-              {item.label}
+              {t(item.key)}
               {item.to === "/cart" && count > 0 ? (
-                <span className="ml-1 rounded-full bg-gold px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
+                <span className="ms-1 rounded-full bg-gold px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
                   {count}
                 </span>
               ) : null}
             </Link>
           ))}
+          <LanguageToggle className="ms-2" />
         </nav>
 
         <div className="flex items-center gap-2 md:hidden">
+          <LanguageToggle />
           <Link
             to="/cart"
-            aria-label="Cart"
+            aria-label={t("nav.cart")}
             className="relative rounded-md p-2 text-gold transition-colors hover:bg-accent"
           >
             <ShoppingBag className="h-5 w-5" />
             {count > 0 ? (
-              <span className="absolute -right-0.5 -top-0.5 rounded-full bg-gold px-1.5 text-[10px] font-bold text-primary-foreground">
+              <span className="absolute -end-0.5 -top-0.5 rounded-full bg-gold px-1.5 text-[10px] font-bold text-primary-foreground">
                 {count}
               </span>
             ) : null}
           </Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              aria-label="Open menu"
+              aria-label={t("nav.openMenu")}
               className="rounded-md p-2 text-gold transition-colors hover:bg-accent"
             >
               <MenuIcon className="h-6 w-6" />
@@ -81,7 +85,7 @@ export function SiteHeader() {
                     onClick={() => setOpen(false)}
                     className="rounded-md px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-gold data-[status=active]:text-gold"
                   >
-                    {item.label}
+                    {t(item.key)}
                     {item.to === "/cart" && count > 0 ? ` (${count})` : ""}
                   </Link>
                 ))}

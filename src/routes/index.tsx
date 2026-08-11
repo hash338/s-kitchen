@@ -5,6 +5,7 @@ import logo from "@/assets/s-kitchen-logo.jpg.asset.json";
 import { menuQueryOptions } from "@/lib/menu-data";
 import { BRAND, formatPrice } from "@/lib/brand";
 import { DishImage } from "@/components/DishImage";
+import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { data: items } = useSuspenseQuery(menuQueryOptions);
+  const { t } = useLang();
   const featured = items.filter((item) => item.is_today).slice(0, 6);
 
   return (
@@ -41,7 +43,7 @@ function Home() {
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-4 py-16 md:flex-row md:py-24">
           <div className="flex-1 text-center md:text-left">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-soft">
-              Saksakiyeh · Lebanon
+              {t("home.eyebrow")}
             </p>
             <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
               <span className="text-gold-gradient">Salma's Kitchen</span>
@@ -49,15 +51,14 @@ function Home() {
               <span className="text-foreground">cooked with love</span>
             </h1>
             <p className="mx-auto mt-5 max-w-md text-base text-muted-foreground md:mx-0">
-              {BRAND.tagline}. Choose your dishes, tell us takeaway or delivery, and we
-              handle the rest.
+              {t("home.tagline")}. {t("home.heroSub")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
               <Link
                 to="/menu"
                 className="inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-bold text-primary-foreground shadow-gold transition-opacity hover:opacity-90"
               >
-                See the menu <ArrowRight className="h-4 w-4" />
+                {t("home.seeMenu")} <ArrowRight className="h-4 w-4" />
               </Link>
               <a
                 href={BRAND.whatsappLink}
@@ -65,7 +66,7 @@ function Home() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 text-sm font-semibold text-gold transition-colors hover:bg-accent"
               >
-                WhatsApp us
+                {t("home.whatsapp")}
               </a>
             </div>
           </div>
@@ -81,9 +82,9 @@ function Home() {
 
       <section className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-12 sm:grid-cols-3">
         {[
-          { icon: Truck, title: "Delivery or takeaway", text: "Pick what suits you at checkout." },
-          { icon: Clock, title: "Cooked to order", text: "Everything is made fresh, daily." },
-          { icon: MapPin, title: BRAND.locationLabel, text: "Find us on the map." },
+          { icon: Truck, title: t("home.card1.title"), text: t("home.card1.text") },
+          { icon: Clock, title: t("home.card2.title"), text: t("home.card2.text") },
+          { icon: MapPin, title: BRAND.locationLabel, text: t("home.card3.text") },
         ].map((card) => (
           <div
             key={card.title}
@@ -103,7 +104,7 @@ function Home() {
               Today's dishes
             </h2>
             <Link to="/menu" className="text-sm font-semibold text-gold hover:underline">
-              Full menu
+              {t("home.fullMenu")}
             </Link>
           </div>
           <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-5 lg:grid-cols-3">
@@ -119,7 +120,7 @@ function Home() {
                 />
                 {!item.is_available ? (
                   <span className="absolute left-2 top-2 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">
-                    Sold out
+                    {t("common.soldOut")}
                   </span>
                 ) : null}
                 <div className="p-2 sm:p-4">

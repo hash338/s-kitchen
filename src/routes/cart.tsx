@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { formatPrice } from "@/lib/brand";
 import { useCart } from "@/lib/cart";
+import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { lines, total, setQuantity, remove, clear } = useCart();
+  const { t } = useLang();
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
@@ -30,12 +32,12 @@ function CartPage() {
 
       {lines.length === 0 ? (
         <div className="mt-10 rounded-xl border border-border/60 bg-card p-8 text-center">
-          <p className="text-muted-foreground">Your cart is empty.</p>
+          <p className="text-muted-foreground">{t("cart.empty")}</p>
           <Link
             to="/menu"
             className="mt-5 inline-block rounded-full bg-gold-gradient px-6 py-3 text-sm font-bold text-primary-foreground"
           >
-            Browse the menu
+            {t("cart.browse")}
           </Link>
         </div>
       ) : (
@@ -48,7 +50,7 @@ function CartPage() {
               >
                 <div className="min-w-0">
                   <p className="font-display text-lg">{line.name}</p>
-                  <p className="price-tag text-sm">{formatPrice(line.price)} each</p>
+                  <p className="price-tag text-sm">{formatPrice(line.price)} {t("cart.each")}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 rounded-full border border-border/60 px-2 py-1">
@@ -87,7 +89,7 @@ function CartPage() {
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gold/40 bg-card p-5">
             <div>
-              <p className="text-sm text-muted-foreground">Total</p>
+              <p className="text-sm text-muted-foreground">{t("cart.total")}</p>
               <p className="price-tag text-2xl">{formatPrice(total)}</p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -95,13 +97,13 @@ function CartPage() {
                 onClick={clear}
                 className="rounded-full border border-border px-5 py-3 text-sm font-semibold text-muted-foreground hover:text-destructive"
               >
-                Clear cart
+                {t("cart.clear")}
               </button>
               <Link
                 to="/order"
                 className="rounded-full bg-gold-gradient px-6 py-3 text-sm font-bold text-primary-foreground shadow-gold"
               >
-                Continue to order
+                {t("cart.continue")}
               </Link>
             </div>
           </div>
