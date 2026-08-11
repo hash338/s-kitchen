@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CartRouteImport } from './routes/cart'
-import { Route as InformationRouteImport } from './routes/information'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as OrderRouteImport } from './routes/order'
 import { Route as SKitchenStaff2024RouteImport } from './routes/s-kitchen-staff-2024'
@@ -30,11 +29,6 @@ const AdminRoute = AdminRouteImport.update({
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InformationRoute = InformationRouteImport.update({
-  id: '/information',
-  path: '/information',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenuRoute = MenuRouteImport.update({
@@ -57,7 +51,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
-  '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
@@ -66,7 +59,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
-  '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
@@ -76,7 +68,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
-  '/information': typeof InformationRoute
   '/menu': typeof MenuRoute
   '/order': typeof OrderRoute
   '/s-kitchen-staff-2024': typeof SKitchenStaff2024Route
@@ -84,28 +75,14 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/admin'
-    | '/cart'
-    | '/information'
-    | '/menu'
-    | '/order'
-    | '/s-kitchen-staff-2024'
+    '/' | '/admin' | '/cart' | '/menu' | '/order' | '/s-kitchen-staff-2024'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin'
-    | '/cart'
-    | '/information'
-    | '/menu'
-    | '/order'
-    | '/s-kitchen-staff-2024'
+  to: '/' | '/admin' | '/cart' | '/menu' | '/order' | '/s-kitchen-staff-2024'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/cart'
-    | '/information'
     | '/menu'
     | '/order'
     | '/s-kitchen-staff-2024'
@@ -115,7 +92,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CartRoute: typeof CartRoute
-  InformationRoute: typeof InformationRoute
   MenuRoute: typeof MenuRoute
   OrderRoute: typeof OrderRoute
   SKitchenStaff2024Route: typeof SKitchenStaff2024Route
@@ -142,13 +118,6 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/information': {
-      id: '/information'
-      path: '/information'
-      fullPath: '/information'
-      preLoaderRoute: typeof InformationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menu': {
@@ -179,7 +148,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CartRoute: CartRoute,
-  InformationRoute: InformationRoute,
   MenuRoute: MenuRoute,
   OrderRoute: OrderRoute,
   SKitchenStaff2024Route: SKitchenStaff2024Route,
@@ -187,13 +155,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
