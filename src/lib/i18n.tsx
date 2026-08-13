@@ -134,7 +134,10 @@ const dict = {
   // footer
   "footer.contact": { en: "Contact", ar: "تواصل" },
   "footer.follow": { en: "Follow", ar: "تابعنا" },
-  "footer.rights": { en: "Saksakiyeh, Lebanon", ar: "السكسكية، لبنان" },
+  "footer.rights": { en: "HASAN YOUNES", ar: "HASAN YOUNES" },
+  "footer.call": { en: "Call", ar: "اتصال" },
+  "footer.callPrompt": { en: "Call or WhatsApp", ar: "اتصال أو واتساب" },
+  "footer.whatsapp": { en: "Open with WhatsApp", ar: "افتح بواتساب" },
 } satisfies Record<string, { en: string; ar: string }>;
 
 export type TKey = keyof typeof dict;
