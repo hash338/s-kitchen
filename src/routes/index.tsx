@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Clock, MapPin, Truck } from "lucide-react";
-import logo from "@/assets/s-kitchen-logo.jpg.asset.json";
+const logo = { url: "/s-kitchen-logo.jpg" };
 import { menuQueryOptions } from "@/lib/menu-data";
 import { BRAND, formatPrice } from "@/lib/brand";
 import { DishImage } from "@/components/DishImage";

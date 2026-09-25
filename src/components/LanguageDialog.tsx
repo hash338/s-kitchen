@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Languages } from "lucide-react";
-import logo from "@/assets/s-kitchen-logo.jpg.asset.json";
+const logo = { url: "/s-kitchen-logo.jpg" };
 import { hasChosenLanguage, useLang, type Lang } from "@/lib/i18n";
 
 export function LanguageDialog() {
