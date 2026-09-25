@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Menu as MenuIcon, ShoppingBag } from "lucide-react";
 import { useState } from "react";
-import logo from "@/assets/s-kitchen-logo.jpg.asset.json";
+const logo = { url: "/s-kitchen-logo.jpg" };
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 import { BRAND } from "@/lib/brand";
